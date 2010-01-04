@@ -1,0 +1,57 @@
+<html>
+	<head>
+		<title>Example JS Exercise</title>
+		<link href="jsassess.css" rel="stylesheet" type="text/css"/>
+	</head>
+<body>
+<h2>Example Exercise</h2>
+<noscript>Are you kidding? You're trying to learn JavaScript with JavaScript turned off? Go fix it and come back soon!</noscript>
+<div>Exercise assignment: blah...</div>
+<form>
+<textarea id="editor2" style="height: 250px; width: 100%;">function myFunction(name, value) {
+  // write your code here
+}</textarea>
+</form>
+<div id="exerciseButtons">
+	<a href="#" id="submitButton">Submit</a>
+</div>
+<div id="jsmeter"></div>
+<div id="jslint"></div>
+<div id="iframes"></div>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+<script type="text/javascript" src="./javascript/edit_area/edit_area_full.js"></script>
+<script>
+jQuery().ready(function() {
+	var exerciseOptions = {'jsmeter': true, 'jslint': true};
+	editAreaLoader.init({
+		id : "editor2",		// textarea id
+		syntax: "js",			// syntax to be uses for highgliting
+		start_highlight: true		// to display with highlight mode on start-up
+	});
+	jQuery("#submitButton").click(function(event) {
+		event.preventDefault();
+		event.stopPropagation();
+		if (exerciseOptions.jsmeter) {
+			run("jsmeter");
+		}
+		if (exerciseOptions.jslint) {
+			run("jslint");
+		}
+		//window.open(window.location + "submit/?code=" + encodeURIComponent(editAreaLoader.getValue("editor2")));
+	});
+});
+if (window.addEventListener) {
+	window.addEventListener( "message", handleMessage, false);
+}
+function handleMessage(msg) {
+	data = JSON.parse(msg.data);
+	jQuery("#" + data.type + "iframe").remove();
+	jQuery("#" + data.type).html("<h1>" + data.type+" results</h1>" + data.results);
+}
+function run(type) {
+	var jsrunframe = document.createElement("iframe");
+	jsrunframe.src = "./" + type + ".html?code=" + encodeURIComponent(editAreaLoader.getValue("editor2"));
+	jQuery("#iframes").append(jsrunframe);
+}
+</script>
+</body></html>

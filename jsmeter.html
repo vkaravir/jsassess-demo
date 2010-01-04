@@ -1,0 +1,202 @@
+<html>
+<head>
+    <title>jsmeter - 
+    
+    JavaScript Code Metrics</title>
+</head>
+
+<body>
+<h1>jsmeter</h1>
+<div id="results"></div>
+<noscript><p>You may not see it because you have JavaScript turned off.</p></noscript>
+<script src="./javascript/jsmeter/tokens.js"></script>
+<script src="./javascript/jsmeter/parse.js"></script>
+<script src="./javascript/jsmeter/json2.js"></script>
+<script src="./javascript/jsmeter/complexity.js"></script>
+<script type="text/javascript">
+function getParam(name) {
+	//from http://www.netlobo.com/url_query_string_javascript.html
+  var regexS = "[\\?&]"+name+"=([^&#]*)";
+  var regex = new RegExp( regexS );
+  var results = regex.exec( window.location.href );
+  if( results == null )
+    return "";
+  else
+    return results[1];
+}
+</script>
+<script type="text/javascript">
+/*jslint evil: true */
+
+/*members create, error, message, name, prototype, stringify, toSource,
+    toString, write
+*/
+
+/*global JSON, make_parse, parse, source, tree */
+window.onload = function() {
+	run();
+}
+// Make a new object that inherits members from an existing object.
+
+if (typeof Object.create !== 'function') {
+    Object.create = function (o) {
+        function F() {}
+        F.prototype = o;
+        return new F();
+    };
+}
+
+// Transform a token object into an exception object and throw it.
+
+Object.prototype.error = function (message, t) {
+    t = t || this;
+    t.name = "SyntaxError";
+    t.message = message;
+    debugger;
+    throw t;
+};
+    
+// Pre-lode code box
+
+/*sourceC = make_complexity.toSource ? 
+        make_complexity.toSource() : make_complexity.toString();
+sourceC = "var make_complexity = " + sourceC + ";";
+document.getElementById("code").value = sourceC;*/
+
+function run() {
+    try {
+        parse = make_parse();
+        
+        source = decodeURIComponent(getParam("code"));
+        /*JSLINT(source, {
+            browser: true,
+            debug: true,
+            evil: true,
+            forin: true,
+            passfail: true,
+            sub: true
+        });
+        if (JSLINT.errors.length>0) {
+            alert("Please make sure that your codes passes JSLint validation before using this tool");
+        }*/
+        tree = parse(source);
+        //console.log(tree);
+        //alert(JSON.stringify(tree, ['name', 'message', 'from', 'to', 'line', 'key',
+        //        'value', 'arity', 'first', 'second', 'third', 'fourth'], 4));
+    
+        COMPLEXITY.complexity(tree, "code");
+        //COMPLEXITY.renderStats(document.getElementById("results"));
+		var d = {
+            text : "",
+            write : function(t) {
+                this.text = this.text + t;
+            }
+        };
+        d.write("<table border=\"0\" >");
+        d.write("<tr>");
+        d.write("<th>");
+        d.write("Line");
+        d.write("</th>");
+        d.write("<th>");
+        d.write("Function");
+        d.write("</th>");
+        d.write("<th>");
+        d.write("Statements");
+        d.write("</th>");
+        d.write("<th>");
+        d.write("Lines");
+        d.write("</th>");
+        d.write("<th>");
+        d.write("Comment Lines");
+        d.write("</th>");
+        d.write("<th>");
+        d.write("Comment%");
+        d.write("</th>");
+        d.write("<th>");
+        d.write("Branches");
+        d.write("</th>");
+        d.write("<th>");
+        d.write("Depth");
+        d.write("</th>");
+        d.write("<th>");
+        d.write("Cyclomatic Complexity");
+        d.write("</th>");
+        d.write("<th>");
+        d.write("Halstead Volume");
+        d.write("</th>");
+        d.write("<th>");
+        d.write("Halstead Potential");
+        d.write("</th>");
+        d.write("<th>");
+        d.write("Program Level");
+        d.write("</th>");
+        d.write("<th>");
+        d.write("MI");
+        d.write("</th>");
+        d.write("</tr>");
+		var fns = COMPLEXITY.getFunctions();
+    	for (i in fns) {
+			if (!Object[i]) {
+				comp = fns[i].complexity();
+                mi = fns[i].mi();
+                pl = fns[i].halsteadLevel();
+                
+                d.write("<tr>");
+                d.write("<td>");
+                d.write(fns[i].lineStart);
+                d.write("</td>");
+                d.write("<td>");
+                d.write(fns[i].name.replace("[[code]].", ""));
+                d.write("</td>");
+                d.write("<td>");
+                d.write(fns[i].s);
+                d.write("</td>");
+                d.write("<td>");
+                d.write(fns[i].lines());
+                d.write("</td>");
+                d.write("<td>");
+                d.write(fns[i].comments);
+                d.write("</td>");
+                d.write("<td>");
+                d.write(Math.round(fns[i].comments / (fns[i].lines()) * 10000)/100 + "%");
+                d.write("</td>");
+                d.write("<td>");
+                d.write(fns[i].b);
+                d.write("</td>");
+                d.write("<td>");
+                d.write(fns[i].blockDepth);
+                d.write("</td>");
+                d.write("<td " + (comp>11?"style=\"color:red\"":"") + ">");
+                d.write(comp);
+                d.write("</td>");
+                d.write("<td>");
+                d.write(fns[i].halsteadVolume());
+                d.write("</td>");
+                d.write("<td>");
+                d.write(fns[i].halsteadPotential());
+                d.write("</td>");
+                d.write("<td " + (pl<0.01?"style=\"color:red\"":"") + ">");
+                d.write(pl);
+                d.write("</td>");
+                d.write("<td " + (mi<100?"style=\"color:red\"":"") + ">");
+                d.write(mi);
+                d.write("</td>");
+                d.write("</tr>");
+			}
+		}
+    } catch (e) {
+        document.getElementById("results").innerText = JSON.stringify(e, ['name', 'message', 'from', 'to', 'line', 'key',
+                'value', 'arity', 'first', 'second', 'third', 'fourth'], 4);
+    }
+	window.top.postMessage(JSON.stringify({
+		'results': d.text,
+		'type': 'jsmeter'
+	}), "*");
+    delete parse;
+    delete source;
+    delete tree;
+}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<html><head>
+<link rel="stylesheet" type="text/css" href="/site-media/css/qunit.css"/>
+<script type="text/javascript" src="/site-media/javascript/qunit/qunit.js"></script>
+<script type="text/javascript" src="/site-media/javascript/jsmeter/json2.js"></script>
+
+<h1 id="qunit-header">Running tests</h1>
+ <h2 id="qunit-banner"></h2>
+ <h2 id="qunit-userAgent"></h2>
+ <ol id="qunit-tests"></ol>
+ <div id="submitting" style="display: none">Submitting results..</div>
+<script type="text/javascript">
+function getParam(name) {
+	//from http://www.netlobo.com/url_query_string_javascript.html
+  var regexS = "[\\?&]"+name+"=([^&#]*)";
+  var regex = new RegExp( regexS );
+  var results = regex.exec( window.location.href );
+  if( results == null )
+    return "";
+  else
+    return results[1];
+}
+</script>
+<script type="text/javascript">
+{{code|safe}}
+jQuery(document).ready(function(){
+    
+test("a basic test example", function() {
+  ok( true, "this test is fine" );
+  ok(mySetCookie, "function exists");
+  var value = "hello";
+  equals( "hello", value, "We expect value to be hello" );
+});
+});
+QUnit.done = function(failures, total) {
+	//alert("Failed " + failures + " / " + total);
+}
+if (window.addEventListener) {
+	window.addEventListener( "message", handleMessage, false);
+}
+function handleMessage(msg) {
+	console.log(msg);
+	data = JSON.parse(msg.data);
+	console.log( "message from child: " + data.results );
+	jQuery("#" + data.type + "iframe").remove();
+	jQuery("#" + data.type).html("<h1>" + data.type+" results</h1>" + data.results);
+}
+</script>
