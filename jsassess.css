@@ -17,3 +17,5 @@ iframe {
 #jslint #functions {
 	display: none;
 }
+.pass { color: green; }
+.fail { color: red; }
