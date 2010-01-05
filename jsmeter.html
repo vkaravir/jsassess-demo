@@ -69,7 +69,6 @@ function run() {
         
         source = getParam("code");
 		options = JSON.parse(getParam("options") || "{}");
-		console.log(options);
         tree = parse(source);
     
         COMPLEXITY.complexity(tree, "code");
@@ -170,14 +169,11 @@ function run() {
 		var val;
 		for (i in fns) {
 			if (!Object[i]) {
-				console.log(fns[i]['lines']);
 				for (var opt in options) {
 					if (opt === 'error') {
 						continue;
 					}
-					console.log(options[opt]);
 					var opti = fns[i][opt];
-					console.log(fns[i].name.replace("[[code]].", "") + opti + " " + (typeof opti === 'function'));
 					if (typeof opti === 'function') {
 						val = opti();
 					}
@@ -193,7 +189,6 @@ function run() {
 			}
 		}
     } catch (e) {
-		console.log(e);
         document.getElementById("results").innerText = JSON.stringify(e, ['name', 'message', 'from', 'to', 'line', 'key',
                 'value', 'arity', 'first', 'second', 'third', 'fourth'], 4);
     }
