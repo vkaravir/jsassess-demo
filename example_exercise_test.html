@@ -27,12 +27,11 @@ function getParam(name) {
 <script type="text/javascript">
 
 jQuery(document).ready(function(){
-    eval(getParam("code"));
-	test("a basic test example", function() {
-  		ok( false, "this test is fine" );
-  		ok(myFunction, "function exists");
-  		var value = "hello";
-  		equals( "hello", value, "We expect value to be hello" );
-	});
+eval(getParam("code"));
+test("Example given in the exercise description", function() {
+  ok( true, "this test is fine" );
+  ok(subSum, "function named subSum exists");
+  equals(187, subSum([31, 41, 59, 26, -53, 58, 97, -93, -23, 84]) );
+});
 });
 </script>
