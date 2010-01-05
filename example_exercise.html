@@ -41,9 +41,9 @@ For instance, if the input vector contains these ten elements
 	<a href="#" id="submitButton">Get feedback</a>
 </div>
 <div id="feedback">
-<div id="jsmeter"></div>
 <div id="jslint"></div>
 <div id="test"></div>
+<div id="jsmeter"></div>
 </div>
 <div id="iframes"></div>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
@@ -52,6 +52,9 @@ For instance, if the input vector contains these ten elements
 <script type="text/javascript">
 var exerciseOptions = {};
 var jsmeterFilters = { 
+	//["Line", "Function", "Statements", "Lines", "Comment Lines", 
+	//	 "Comment%", "Branches", "Depth", "Cyclomatic Complexity", 
+	//	 "Halstead Volume", "Halstead Potential", "Program Level", "MI"]
 	defaultFilter: function(metrics) {
 		var html = "<table>";
 		for (var index in metrics) {
@@ -63,6 +66,23 @@ var jsmeterFilters = {
 		}
 		html += "</table>";
 		return html;
+	},
+	restrictedDepthFilter: function(metrics) {
+		var depth = 0;
+		for (var index in metrics) {
+			if (index === "0") { continue; }
+			console.log(index + " "+metrics[index][7] + " "+depth);
+			depth += new Number(metrics[index][7]);
+		}
+		var bgColor = "green", feedback = "Complexity looks not too complex :)";
+		if (depth >= 3) { 
+			bgColor = "red";
+			feedback = "Your algorithm looks quite complex, perhaps O(N<sup>3</sup>)";
+		} else if (depth > 1) {
+			bgColor = "orange";
+			feedback = "Pretty good, perhaps O(N<sup>2</sup>) or O(NlogN)"
+		}
+		return '<div style="color:' + bgColor + '">' + feedback + '</div>';
 	}
 };
 jQuery().ready(function() {
@@ -92,12 +112,13 @@ if (window.addEventListener) {
 }
 function handleMessage(msg) {
 	data = JSON.parse(msg.data);
+	jQuery("#" + data.type + "iframe").remove();
 	if (data.type === 'jsmeter') {
-		jQuery("#" + data.type + "iframe").remove();
-		jQuery("#" + data.type).html("<h1>JSMeter results</h1>" + exerciseOptions.jsmeter(data.results));		
-	} else {
-		jQuery("#" + data.type + "iframe").remove();
-		jQuery("#" + data.type).html("<h1>" + data.type+" results</h1>" + data.results);
+		jQuery("#" + data.type).html("<h1>Complexity metrics</h1>" + exerciseOptions.jsmeter(data.results));		
+	} else if (data.type === 'jslint'){
+		jQuery("#" + data.type).html("<h1>Programming and style errors</h1>" + data.results);
+	} else if (data.type === 'test') {
+		jQuery("#" + data.type).html("<h1>Functionality</h1>" + data.results);
 	}
 }
 function run(type, exerciseOptions) {
@@ -109,12 +130,13 @@ function run(type, exerciseOptions) {
 }
 function runTests(testFile, exerciseOptions) {
 	var jsrunframe = document.createElement("iframe");
+	jsrunframe.id = "testiframe";
 	jsrunframe.src = "./" + testFile + "?code=" + encodeURIComponent(editAreaLoader.getValue("editor2"));
 	jQuery("#iframes").append(jsrunframe);
 }
 </script>
 <script>
-exerciseOptions = {'jsmeter': jsmeterFilters.defaultFilter, 
+exerciseOptions = {'jsmeter': jsmeterFilters.restrictedDepthFilter, 
   				   'jslint': true,
 				   'tests': ['example_exercise_test.html']};
 </script>
