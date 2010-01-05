@@ -24,11 +24,11 @@ function getParam(name) {
 {{code|safe}}
 jQuery(document).ready(function(){
     
-test("a basic test example", function() {
+test("Example given in the exercise description", function() {
   ok( true, "this test is fine" );
-  ok(mySetCookie, "function exists");
+  ok(subSum, "function named subSum exists");
   var value = "hello";
-  equals( "hello", value, "We expect value to be hello" );
+  equals(187, subSum([31, 41, 59, 26, -53, 58, 97, -93, -23, 84]) );
 });
 });
 QUnit.done = function(failures, total) {
