@@ -47,10 +47,24 @@ For instance, if the input vector contains these ten elements
 <script type="text/javascript" src="./javascript/edit_area/edit_area_full.js"></script>
 <script type="text/javascript" src="./javascript/jsmeter/json2.js"></script>
 <script>
+var jsmeterFilters = { 
+	defaultFilter: function(metrics) {
+		var html = "<table>";
+		for (var index in metrics) {
+			html += "<tr>";
+			for (var index2 in metrics[index]) {
+				html += "<td>" + metrics[index][index2] + "</td>";				
+			}
+			html += "</tr>";
+		}
+		html += "</table>";
+		return html;
+	}
+};
+var exerciseOptions = {'jsmeter': jsmeterFilters.defaultFilter, 
+					   'jslint': true,
+					   'tests': ['example_exercise_test.html']};
 jQuery().ready(function() {
-	var exerciseOptions = {'jsmeter': {'lines': [2, 10], 'comments': [0, 0]}, 
-						   'jslint': true,
-						   'tests': ['example_exercise_test.html']};
 	editAreaLoader.init({
 		id : "editor2",		// textarea id
 		syntax: "js",			// syntax to be uses for highgliting
@@ -67,7 +81,6 @@ jQuery().ready(function() {
 		}
 		if (exerciseOptions.tests) {
 			for (var index in exerciseOptions.tests) {
-				console.log(exerciseOptions.tests[index]);
 				runTests(exerciseOptions.tests[index]);
 			}
 		}
@@ -78,11 +91,17 @@ if (window.addEventListener) {
 }
 function handleMessage(msg) {
 	data = JSON.parse(msg.data);
-	jQuery("#" + data.type + "iframe").remove();
-	jQuery("#" + data.type).html("<h1>" + data.type+" results</h1>" + data.results);
+	if (data.type === 'jsmeter') {
+		jQuery("#" + data.type + "iframe").remove();
+		jQuery("#" + data.type).html("<h1>JSMeter results</h1>" + exerciseOptions.jsmeter(data.results));		
+	} else {
+		jQuery("#" + data.type + "iframe").remove();
+		jQuery("#" + data.type).html("<h1>" + data.type+" results</h1>" + data.results);
+	}
 }
 function run(type, exerciseOptions) {
 	var jsrunframe = document.createElement("iframe");
+	jsrunframe.id = type + "iframe";
 	jsrunframe.src = "./" + type + ".html?code=" + encodeURIComponent(editAreaLoader.getValue("editor2")) +
 		"&options=" + encodeURIComponent(JSON.stringify(exerciseOptions[type]));
 	jQuery("#iframes").append(jsrunframe);

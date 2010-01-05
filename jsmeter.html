@@ -57,143 +57,34 @@ Object.prototype.error = function (message, t) {
 };
     
 function run() {
-	var result;
-	var d = {
-           text : "",
-           write : function(t) {
-               this.text = this.text + t;
-           }
-    };
+	var result = [];
     try {
-        parse = make_parse();
+        var parse = make_parse();
         
-        source = getParam("code");
-		options = JSON.parse(getParam("options") || "{}");
+        var source = getParam("code");
         tree = parse(source);
-    
+    	result.push(["Line", "Function", "Statements", "Lines", "Comment Lines", 
+					 "Comment%", "Branches", "Depth", "Cyclomatic Complexity", 
+					 "Halstead Volume", "Halstead Potential", "Program Level", "MI"]);
         COMPLEXITY.complexity(tree, "code");
-        //COMPLEXITY.renderStats(document.getElementById("results"));
-        d.write("<table border=\"0\" >");
-        d.write("<tr>");
-        d.write("<th>");
-        d.write("Line");
-        d.write("</th>");
-        d.write("<th>");
-        d.write("Function");
-        d.write("</th>");
-        d.write("<th>");
-        d.write("Statements");
-        d.write("</th>");
-        d.write("<th>");
-        d.write("Lines");
-        d.write("</th>");
-        d.write("<th>");
-        d.write("Comment Lines");
-        d.write("</th>");
-        d.write("<th>");
-        d.write("Comment%");
-        d.write("</th>");
-        d.write("<th>");
-        d.write("Branches");
-        d.write("</th>");
-        d.write("<th>");
-        d.write("Depth");
-        d.write("</th>");
-        d.write("<th>");
-        d.write("Cyclomatic Complexity");
-        d.write("</th>");
-        d.write("<th>");
-        d.write("Halstead Volume");
-        d.write("</th>");
-        d.write("<th>");
-        d.write("Halstead Potential");
-        d.write("</th>");
-        d.write("<th>");
-        d.write("Program Level");
-        d.write("</th>");
-        d.write("<th>");
-        d.write("MI");
-        d.write("</th>");
-        d.write("</tr>");
+
 		var fns = COMPLEXITY.getFunctions();
     	for (i in fns) {
 			if (!Object[i]) {
 				comp = fns[i].complexity();
                 mi = fns[i].mi();
                 pl = fns[i].halsteadLevel();
-                
-                d.write("<tr>");
-                d.write("<td>");
-                d.write(fns[i].lineStart);
-                d.write("</td>");
-                d.write("<td>");
-                d.write(fns[i].name.replace("[[code]].", ""));
-                d.write("</td>");
-                d.write("<td>");
-                d.write(fns[i].s);
-                d.write("</td>");
-                d.write("<td>");
-                d.write(fns[i].lines());
-                d.write("</td>");
-                d.write("<td>");
-                d.write(fns[i].comments);
-                d.write("</td>");
-                d.write("<td>");
-                d.write(fns[i].commentPercent());
-                d.write("</td>");
-                d.write("<td>");
-                d.write(fns[i].b);
-                d.write("</td>");
-                d.write("<td>");
-                d.write(fns[i].blockDepth);
-                d.write("</td>");
-                d.write("<td " + (comp>11?"style=\"color:red\"":"") + ">");
-                d.write(comp);
-                d.write("</td>");
-                d.write("<td>");
-                d.write(fns[i].halsteadVolume());
-                d.write("</td>");
-                d.write("<td>");
-                d.write(fns[i].halsteadPotential());
-                d.write("</td>");
-                d.write("<td " + (pl<0.01?"style=\"color:red\"":"") + ">");
-                d.write(pl);
-                d.write("</td>");
-                d.write("<td " + (mi<100?"style=\"color:red\"":"") + ">");
-                d.write(mi);
-                d.write("</td>");
-                d.write("</tr>");
-			}
-		}
-		d.write("</table>");
-		var val;
-		for (i in fns) {
-			if (!Object[i]) {
-				for (var opt in options) {
-					if (opt === 'error') {
-						continue;
-					}
-					var opti = fns[i][opt];
-					if (typeof opti === 'function') {
-						val = opti();
-					}
-					else {
-						val = opti;
-					}
-					if (options[opt].length > 0 && options[opt][0] > val) {
-						d.write("<div>too small value for " + opt + " in " + fns[i].name.replace("[[code]].", "")  + "</div>");
-					} else if (options[opt].length > 1 && options[opt][1] < val) {
-						d.write("<div>too large value for " + opt + " in " + fns[i].name.replace("[[code]].", "")  + "</div>");
-					}
-				}
+                result.push([fns[i].lineStart, fns[i].name.replace("[[code]].", ""), 
+						     fns[i].s, fns[i].lines(), fns[i].comments, fns[i].commentPercent(), 
+							 fns[i].b, fns[i].blockDepth, comp, fns[i].halsteadVolume(), 
+							 fns[i].halsteadPotential(), pl, mi]);
 			}
 		}
     } catch (e) {
-        document.getElementById("results").innerText = JSON.stringify(e, ['name', 'message', 'from', 'to', 'line', 'key',
-                'value', 'arity', 'first', 'second', 'third', 'fourth'], 4);
+		window.top.postMessage(JSON.stringify({'type': 'jsmeter', 'results': ['failed', e.message]}), "*");
     }
 	window.top.postMessage(JSON.stringify({
-		'results': d.text,
+		'results': result,
 		'type': 'jsmeter'
 	}), "*");
     delete parse;
