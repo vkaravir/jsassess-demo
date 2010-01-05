@@ -149,6 +149,9 @@ var make_complexity = function() {
             };
             this.mi = function() {
                 return sigDig(171 - 3.42 * Math.log(this.halsteadVolume()) - 0.23 * this.complexity() - 16.2 * Math.log(this.lines()) + 0.99 * this.comments, 5);
+            };
+            this.commentPercent = function() {
+            	return Math.round(this.comments / (this.lines()) * 10000)/100 + "%";
             }
         
         },

@@ -22,7 +22,7 @@ function getParam(name) {
   if( results == null )
     return "";
   else
-    return results[1];
+    return decodeURIComponent(results[1]);
 }
 </script>
 <script type="text/javascript">
@@ -52,46 +52,28 @@ Object.prototype.error = function (message, t) {
     t = t || this;
     t.name = "SyntaxError";
     t.message = message;
-    debugger;
+    //debugger;
     throw t;
 };
     
-// Pre-lode code box
-
-/*sourceC = make_complexity.toSource ? 
-        make_complexity.toSource() : make_complexity.toString();
-sourceC = "var make_complexity = " + sourceC + ";";
-document.getElementById("code").value = sourceC;*/
-
 function run() {
+	var result;
+	var d = {
+           text : "",
+           write : function(t) {
+               this.text = this.text + t;
+           }
+    };
     try {
         parse = make_parse();
         
-        source = decodeURIComponent(getParam("code"));
-        /*JSLINT(source, {
-            browser: true,
-            debug: true,
-            evil: true,
-            forin: true,
-            passfail: true,
-            sub: true
-        });
-        if (JSLINT.errors.length>0) {
-            alert("Please make sure that your codes passes JSLint validation before using this tool");
-        }*/
+        source = getParam("code");
+		options = JSON.parse(getParam("options") || "{}");
+		console.log(options);
         tree = parse(source);
-        //console.log(tree);
-        //alert(JSON.stringify(tree, ['name', 'message', 'from', 'to', 'line', 'key',
-        //        'value', 'arity', 'first', 'second', 'third', 'fourth'], 4));
     
         COMPLEXITY.complexity(tree, "code");
         //COMPLEXITY.renderStats(document.getElementById("results"));
-		var d = {
-            text : "",
-            write : function(t) {
-                this.text = this.text + t;
-            }
-        };
         d.write("<table border=\"0\" >");
         d.write("<tr>");
         d.write("<th>");
@@ -158,7 +140,7 @@ function run() {
                 d.write(fns[i].comments);
                 d.write("</td>");
                 d.write("<td>");
-                d.write(Math.round(fns[i].comments / (fns[i].lines()) * 10000)/100 + "%");
+                d.write(fns[i].commentPercent());
                 d.write("</td>");
                 d.write("<td>");
                 d.write(fns[i].b);
@@ -184,7 +166,34 @@ function run() {
                 d.write("</tr>");
 			}
 		}
+		d.write("</table>");
+		var val;
+		for (i in fns) {
+			if (!Object[i]) {
+				console.log(fns[i]['lines']);
+				for (var opt in options) {
+					if (opt === 'error') {
+						continue;
+					}
+					console.log(options[opt]);
+					var opti = fns[i][opt];
+					console.log(fns[i].name.replace("[[code]].", "") + opti + " " + (typeof opti === 'function'));
+					if (typeof opti === 'function') {
+						val = opti();
+					}
+					else {
+						val = opti;
+					}
+					if (options[opt].length > 0 && options[opt][0] > val) {
+						d.write("<div>too small value for " + opt + " in " + fns[i].name.replace("[[code]].", "")  + "</div>");
+					} else if (options[opt].length > 1 && options[opt][1] < val) {
+						d.write("<div>too large value for " + opt + " in " + fns[i].name.replace("[[code]].", "")  + "</div>");
+					}
+				}
+			}
+		}
     } catch (e) {
+		console.log(e);
         document.getElementById("results").innerText = JSON.stringify(e, ['name', 'message', 'from', 'to', 'line', 'key',
                 'value', 'arity', 'first', 'second', 'third', 'fourth'], 4);
     }
