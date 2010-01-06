@@ -123,7 +123,9 @@ function handleMessage(msg) {
 function run(type, exerciseOptions) {
 	var jsrunframe = document.createElement("iframe");
 	jsrunframe.id = type + "iframe";
-	jsrunframe.src = "./" + type + ".html?code=" + encodeURIComponent(editAreaLoader.getValue("editor2")) +
+	var framesrc = exerciseOptions.commonspath + type + ".html?code=" + encodeURIComponent(editAreaLoader.getValue("editor2")) +
+		"&options=" + encodeURIComponent(JSON.stringify(exerciseOptions[type]));
+	jsrunframe.src = exerciseOptions.commonspath + type + ".html?code=" + encodeURIComponent(editAreaLoader.getValue("editor2")) +
 		"&options=" + encodeURIComponent(JSON.stringify(exerciseOptions[type]));
 	jQuery("#iframes").append(jsrunframe);
 }
@@ -137,6 +139,7 @@ function runTests(testFile, exerciseOptions) {
 <script>
 exerciseOptions = {'jsmeter': jsmeterFilters.restrictedDepthFilter, 
   				   'jslint': true,
-				   'tests': ['example_exercise_test.html']};
+				   'tests': ['example_exercise_test.html'],
+				   'commonspath': './javascript/'};
 </script>
 </body></html>
