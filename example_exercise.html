@@ -71,7 +71,7 @@ var jsmeterFilters = {
 		var depth = 0;
 		for (var index in metrics) {
 			if (index === "0") { continue; }
-			depth += new Number(metrics[index][7]);
+			depth += metrics[index][7];
 		}
 		var bgColor = "green", feedback = "Complexity looks not too complex :)";
 		if (depth >= 3) { 
