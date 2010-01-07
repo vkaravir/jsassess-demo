@@ -1,20 +1,28 @@
+body { background: #EEEEEE; }
+.jsassess { border: 1px solid black; -moz-border-radius: 10px; padding: 1%; background: white;}
+#jsassess-exercise { float: left; width:57%;}
+#jsassess-feedback { 
+overflow:auto;
+position:absolute;
+right:1%;
+top:8px;
+width:37%;
+}
 iframe {
 	display: none;
 }
-#jslint {
-}
-#jslint p {
+#jsassess-jslint p {
 	border-top: 1px solid black;
 	background-color: lightGray;
 	margin-bottom: 0px;	
 }
-#jslint p.evidence {
+#jsassess-jslint p.evidence {
 	padding: 0 0 0 20px;
 	margin-top: 0px;
 	font-family: monospace;
 	border: none;
 }
-#jslint #functions {
+#jsassess-jslint #functions {
 	display: none;
 }
 .pass { color: green; }
