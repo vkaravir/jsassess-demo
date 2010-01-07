@@ -52,14 +52,14 @@ function handleMessage(msg) {
 function run(type, exerciseOptions) {
 	var jsrunframe = document.createElement("iframe");
 	jsrunframe.id = type + "iframe";
-	jsrunframe.src = exerciseOptions.commonspath + type + ".html?code=" + encodeURIComponent(editAreaLoader.getValue("editor2")) +
+	jsrunframe.src = exerciseOptions.commonspath + type + ".html?code=" + encodeURIComponent(editAreaLoader.getValue("jsassess-editor")) +
 		"&options=" + encodeURIComponent(JSON.stringify(exerciseOptions[type]));
 	jQuery("#jsassess-iframes").append(jsrunframe);
 }
 function runTests(testFile, exerciseOptions) {
 	var jsrunframe = document.createElement("iframe");
 	jsrunframe.id = "testiframe";
-	jsrunframe.src = "./" + testFile + "?code=" + encodeURIComponent(editAreaLoader.getValue("editor2"));
+	jsrunframe.src = "./" + testFile + "?code=" + encodeURIComponent(editAreaLoader.getValue("jsassess-editor"));
 	jQuery("#jsassess-iframes").append(jsrunframe);
 }
 jQuery().ready(function() {
