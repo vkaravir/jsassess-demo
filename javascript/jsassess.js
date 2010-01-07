@@ -42,11 +42,11 @@ function handleMessage(msg) {
 	data = JSON.parse(msg.data);
 	jQuery("#" + data.type + "iframe").remove();
 	if (data.type === 'jsmeter') {
-		jQuery("#" + data.type).html("<h1>Complexity metrics</h1>" + exerciseOptions.jsmeter(data.results));		
+		jQuery("#jsassess-" + data.type).html("<h1>Complexity metrics</h1>" + exerciseOptions.jsmeter(data.results));		
 	} else if (data.type === 'jslint'){
-		jQuery("#" + data.type).html("<h1>Programming and style errors</h1>" + data.results);
+		jQuery("#jsassess-" + data.type).html("<h1>Programming and style errors</h1>" + data.results);
 	} else if (data.type === 'test') {
-		jQuery("#" + data.type).html("<h1>Functionality</h1>" + data.results);
+		jQuery("#jsassess-" + data.type).html("<h1>Functionality</h1>" + data.results);
 	}
 }
 function run(type, exerciseOptions) {
@@ -54,15 +54,29 @@ function run(type, exerciseOptions) {
 	jsrunframe.id = type + "iframe";
 	jsrunframe.src = exerciseOptions.commonspath + type + ".html?code=" + encodeURIComponent(editAreaLoader.getValue("editor2")) +
 		"&options=" + encodeURIComponent(JSON.stringify(exerciseOptions[type]));
-	jQuery("#iframes").append(jsrunframe);
+	jQuery("#jsassess-iframes").append(jsrunframe);
 }
 function runTests(testFile, exerciseOptions) {
 	var jsrunframe = document.createElement("iframe");
 	jsrunframe.id = "testiframe";
 	jsrunframe.src = "./" + testFile + "?code=" + encodeURIComponent(editAreaLoader.getValue("editor2"));
-	jQuery("#iframes").append(jsrunframe);
+	jQuery("#jsassess-iframes").append(jsrunframe);
 }
 jQuery().ready(function() {
+	var elem, elemId, feedbackIds = ["jslint", "test", "jsmeter"];
+	for (var i=0; i<feedbackIds.length; i++) {
+		elemId = "jsassess-" + feedbackIds[i];
+		if (!jQuery("#" + elemId).length) {
+			elem = document.createElement("div");
+			elem.id = elemId;
+			jQuery("#jsassess-feedback").append(elem);
+		}
+	}
+	if (!jQuery("#jsassess-iframes").length) {
+		elem = document.createElement("div");
+		elem.id = "jsassess-iframes";
+		jQuery("body").append(elem);
+	}
 	editAreaLoader.init({
 		id : "editor2",		// textarea id
 		syntax: "js",			// syntax to be uses for highgliting
