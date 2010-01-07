@@ -78,7 +78,7 @@ jQuery().ready(function() {
 		jQuery("body").append(elem);
 	}
 	editAreaLoader.init({
-		id : "editor2",		// textarea id
+		id : "editor",		// textarea id
 		syntax: "js",			// syntax to be uses for highgliting
 		start_highlight: true		// to display with highlight mode on start-up
 	});
