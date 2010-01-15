@@ -1,0 +1,40 @@
+<html><head>
+<link rel="stylesheet" type="text/css" href="/site-media/css/qunit.css"/>
+<script type="text/javascript" src="../javascript/qunit/qunit.js"></script>
+<script type="text/javascript" src="../javascript/jsmeter/json2.js"></script>
+
+<h1 id="qunit-header">Running tests</h1>
+ <h2 id="qunit-banner"></h2>
+ <h2 id="qunit-userAgent"></h2>
+ <ol id="qunit-tests"></ol>
+ <div id="submitting" style="display: none">Submitting results..</div>
+
+<ul id="list-items"></ul>
+<script type="text/javascript" src="file:///Users/vkaravir/Documents/projects/djangoquizzes/site-media/javascript/jquery-1.3.2.js"></script>
+<!--<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>-->
+<script type="text/javascript" src="../javascript/param_utils.js"></script>
+<script type="text/javascript" src="../javascript/jsmeter/json2.js"></script>
+<script type="text/javascript" src="../javascript/testswarm/inject.js"></script>
+<script type="text/javascript">
+
+jQuery(document).ready(function(){
+eval(getParam("code"));
+test("Testing if the function exists", function() {
+  ok(jsonToDOM, "function named jsonToDOM exists");
+});
+
+test("Testing with data", function() {
+  jsonToDOM("[{'tweet': 'learning', 'user': 'student'}, { 'tweet': 'teaching', 'user': 'teacher'}]");
+  console.log(jQuery("#list-items").children().length);
+  equals(jQuery("#list-items").children().length, 2, "Testing with two elements" );
+});
+
+test("Testing with empty data", function() {
+	jQuery("#list-items").children().remove();
+  jsonToDOM("[]");
+  console.log(jQuery("#list-items").children().length);
+  equals(jQuery("#list-items").children().length, 0, "Testing with empty data" );
+});
+
+});
+</script>
