@@ -23,23 +23,23 @@ eval(getParam("code"));
 
 test("Array with positive values only", function() {
   ok(subSum, "function named subSum exists");
-  equals(6, subSum([1, 2, 3]));
+  equals(subSum([1, 2, 3]), 6);
 });
 
 test("Array with negative values only", function() {
   ok(subSum, "function named subSum exists");
-  equals(0, subSum([-11, -2, -3]), "With array of negative values only, maximum subsum is zero." );
+  equals(subSum([-11, -2, -3]), 0, "With array of negative values only, maximum subsum is zero." );
 });
 
 test("Example given in the exercise description", function() {
   ok(subSum, "function named subSum exists");
-  equals(187, subSum([31, 41, 59, 26, -53, 58, 97, -93, -23, 84]) );
+  equals(subSum([31, -41, 59, 26, -53, 58, 97, -93, -23, 84]), 187);
 });
 
 test("Typical corner cases of the input length", function() {
   ok(subSum, "function named subSum exists");
-  equals(0, subSum([]), "With empty array, maximum subsum is zero." );
-  equals(6, subSum([6]), "With empty array, maximum subsum is zero." );
+  equals(subSum([]), 0, "With empty array, maximum subsum is zero." );
+  equals(subSum([6]), 6,  "Array with olement only." );
 });
 
 
