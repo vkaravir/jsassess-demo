@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+          "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+<title>JSSpec results</title>
+<link rel="stylesheet" type="text/css" href="../javascript/jsspec/JSSpec.css" />
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+<script type="text/javascript" src="../javascript/param_utils.js"></script>
+<script type="text/javascript" src="../javascript/jsmeter/json2.js"></script>
+<script type="text/javascript" src="../javascript/jsspec/diff_match_patch.js"></script>
+<script type="text/javascript" src="../javascript/jsspec/JSSpec.js"></script>
+<script type="text/javascript" src="../javascript/testswarm/inject.js"></script>
+</head>
+<body>
+<script type="text/javascript">
+// <![CDATA[
+
+
+jQuery(document).ready(function(){
+eval(getParam("code"));
+
+describe('subSum function', {
+        'Array with positive values only': function() {
+                value_of(subSum([1, 2, 3])).should_be(6);
+        },
+        'Array with negative values only': function() {
+                value_of(subSum([1, 2, 3])).should_be(6);
+        },
+        'Example given in the exercise description': function() {
+                value_of(subSum([31, -41, 59, 26, -53, 58, 97, -93, -23, 84])).should_be(187);
+        },
+        'Empty array': function() {
+                value_of(subSum([])).should_be(0);
+        },
+        'Array with one item only': function() {
+                value_of(subSum([5])).should_be(5);
+        }
+})
+
+})
+// ]]>
+</script>
+</body>
+</html>
