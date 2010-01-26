@@ -1,0 +1,50 @@
+<html>
+	<head>
+		<title>Augmenting basic objects 2</title>
+		<link href="jsassess.css" rel="stylesheet" type="text/css"/>
+	</head>
+<body>
+<div id="jsassess-exercise" class="jsassess">
+<h2>Augmenting basic objects with <code>collect</code></h2>
+<noscript>Are you kidding? You're trying to learn JavaScript with JavaScript turned off? Go fix it and come back soon!</noscript>
+<div>
+<p>You want to perform a certain operation on all items in an array and get
+the results into an array. You realize that the <code>pluck</code> method you 
+added in the previous exercise does not fill this need. So, you decide to
+add a <code>collect</code> method to the Array prototype 
+which is a more general version of the <code>pluck</code>. The function should 
+take a function as a parameter and return an array where the values are the 
+return values of the given function.</p>
+<p>Examples:</p>
+<pre>
+["abc", "longer string", "23"].collect(function(item) { return item.charAt(0);});
+//-> ["a", "l", "2"]
+
+[ [2, 3, 1], [4, 5, 1] ].collect(function(item) {
+    var i, sum = 0;
+	for (i = 0; i < item.length; i++) {
+	   sum += item[i];
+	}
+	return sum / i;
+});
+//-> [2, 3.3333333333333335] 
+</pre>
+</div>
+<form>
+<textarea id="jsassess-editor" style="height: 250px; width: 100%;">// write your code here</textarea>
+</form>
+<div id="exerciseButtons">
+	<a href="#" id="submitButton">Get feedback</a>
+</div>
+</div>
+<div id="jsassess-feedback" class="jsassess"></div>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+<script type="text/javascript" src="../javascript/edit_area/edit_area_full.js"></script>
+<script type="text/javascript" src="../javascript/jsmeter/json2.js"></script>
+<script type="text/javascript" src="../javascript/jsassess.js"></script>
+<script>
+exerciseOptions = { 'jslint': true,
+		    'tests': ['collect_augmenting_qunit.html'],
+	 	    'commonspath': '../javascript/'};
+</script>
+</body></html>

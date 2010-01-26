@@ -1,0 +1,45 @@
+<html><head>
+<link rel="stylesheet" type="text/css" href="/site-media/css/qunit.css"/>
+<script type="text/javascript" src="../javascript/qunit/qunit.js"></script>
+<script type="text/javascript" src="../javascript/jsmeter/json2.js"></script>
+</head>
+<body>
+<h1 id="qunit-header">Running tests</h1>
+ <h2 id="qunit-banner"></h2>
+ <h2 id="qunit-userAgent"></h2>
+ <ol id="qunit-tests"></ol>
+ <div id="submitting" style="display: none">Submitting results..</div>
+
+<ul id="list-items"></ul>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+<script type="text/javascript" src="../javascript/param_utils.js"></script>
+<script type="text/javascript" src="../javascript/jsmeter/json2.js"></script>
+<script type="text/javascript" src="../javascript/testswarm/inject.js"></script>
+<script type="text/javascript">
+
+jQuery(document).ready(function(){
+eval(getParam("code"));
+test("Testing if the function exists", function() {
+  ok([].pluck, "Testing if property named pluck exists on Array");
+  ok(typeof [].pluck === 'function', "Testing if pluck is a function")
+});
+
+test("Testing the assignment examples", function() {
+  same(["abc", "longer string", ""].pluck("length"), [3, 13, 0], "Testing the first example in assignment.");
+  same([{'id': 23}, {'id': 15}, {} ].pluck("id"), [23, 15, undefined], "Testing the second example in assignment.");
+});
+
+test("Testing with empty data", function() {
+  same([].pluck("length"), [], "Testing with empty data" );
+  same([1,2].pluck("nonexisting"), [undefined, undefined], "Testing with non-existing property");
+});
+
+test("Testing with tag names", function() {
+  same(jQuery("#testitems").children().get().pluck("nodeName"), ["SPAN", "DIV", "STRONG"]);
+});
+
+});
+</script>
+<div id="testitems"><span></span><div></div><strong></strong></div>
+</body>
+</html>

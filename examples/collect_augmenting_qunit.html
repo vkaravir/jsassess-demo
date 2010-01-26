@@ -1,0 +1,49 @@
+<html><head>
+<link rel="stylesheet" type="text/css" href="/site-media/css/qunit.css"/>
+<script type="text/javascript" src="../javascript/qunit/qunit.js"></script>
+<script type="text/javascript" src="../javascript/jsmeter/json2.js"></script>
+
+<h1 id="qunit-header">Running tests</h1>
+ <h2 id="qunit-banner"></h2>
+ <h2 id="qunit-userAgent"></h2>
+ <ol id="qunit-tests"></ol>
+ <div id="submitting" style="display: none">Submitting results..</div>
+
+<div id="testitems"><span><span></span></span><div></div><strong><span></span><span></span></strong></div>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+<script type="text/javascript" src="../javascript/param_utils.js"></script>
+<script type="text/javascript" src="../javascript/jsmeter/json2.js"></script>
+<script type="text/javascript" src="../javascript/testswarm/inject.js"></script>
+<script type="text/javascript">
+
+jQuery(document).ready(function(){
+eval(getParam("code"));
+test("Testing if the function exists", function() {
+  ok([].collect, "property named collect exists");
+  ok(typeof [].collect === 'function', "collect is a function")
+});
+
+test("Testing the assignment examples", function() {
+  same(["abc", "longer string", "23"].collect(function(item) { return item.charAt(0);}), ["a", "l", "2"], "Testing the first example in assignment.");
+  same([ [2, 3, 1], [4, 5, 1] ].collect(function(item) {
+    var i, sum = 0;
+    for (i = 0; i < item.length; i++) {
+       sum += item[i];
+    }
+    return sum / i;
+    }), [2, 10/3], "Testing the second example in assignment.");
+});
+
+test("Testing with empty data", function() {
+  same([].collect(function(item) {}), [], "Testing with empty data" );
+});
+
+test("Testing with empty function", function() {
+  same([1, 2, 3].collect(function(item) {}), [undefined, undefined, undefined], "Testing with empty data" );
+});
+
+test("Testing with tags", function() {
+  same(jQuery("#testitems").children().get().collect(function(item) {return item.children.length;}), [1, 0, 2]);
+});
+});
+</script>

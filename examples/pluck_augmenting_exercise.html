@@ -1,0 +1,41 @@
+<html>
+	<head>
+		<title>Augmenting basic objects 1</title>
+		<link href="jsassess.css" rel="stylesheet" type="text/css"/>
+	</head>
+<body>
+<div id="jsassess-exercise" class="jsassess">
+<h2>Augmenting basic objects with <code>pluck</code></h2>
+<noscript>Are you kidding? You're trying to learn JavaScript with JavaScript turned off? Go fix it and come back soon!</noscript>
+<div>
+<p>Often you find yourself fetching the same property from all objects in an
+array. To help you work, add a function <code>pluck</code> to the Array prototype 
+which does just that. The function should take a property name as a parameter 
+and return an array where only the given property for each object is.</p>
+<p>Examples:</p>
+<pre>
+["abc", "longer string", ""].pluck("length");
+//-> [3, 13, 0]
+
+[ {'id': 23}, {'id': 15}, {} ].pluck("id");
+//-> [23, 15, undefined] 
+</pre>
+</div>
+<form>
+<textarea id="jsassess-editor" style="height: 250px; width: 100%;">// write your code here</textarea>
+</form>
+<div id="exerciseButtons">
+	<a href="#" id="submitButton">Get feedback</a>
+</div>
+</div>
+<div id="jsassess-feedback" class="jsassess"></div>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+<script type="text/javascript" src="../javascript/edit_area/edit_area_full.js"></script>
+<script type="text/javascript" src="../javascript/jsmeter/json2.js"></script>
+<script type="text/javascript" src="../javascript/jsassess.js"></script>
+<script>
+exerciseOptions = { 'jslint': true,
+		    'tests': ['pluck_augmenting_qunit.html'],
+	 	    'commonspath': '../javascript/'};
+</script>
+</body></html>
