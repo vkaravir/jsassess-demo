@@ -24,14 +24,12 @@ test("Testing if the function exists", function() {
 
 test("Testing with data", function() {
   jsonToDOM("[{'tweet': 'learning', 'user': 'student'}, { 'tweet': 'teaching', 'user': 'teacher'}]");
-  console.log(jQuery("#list-items").children().length);
   equals(jQuery("#list-items").children().length, 2, "Testing with two elements" );
 });
 
 test("Testing with empty data", function() {
 	jQuery("#list-items").children().remove();
   jsonToDOM("[]");
-  console.log(jQuery("#list-items").children().length);
   equals(jQuery("#list-items").children().length, 0, "Testing with empty data" );
 });
 
