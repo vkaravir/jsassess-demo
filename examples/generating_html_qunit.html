@@ -1,0 +1,96 @@
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="/site-media/css/qunit.css"/>
+    </head>
+    <body>
+        <h1 id="qunit-header">Running tests</h1>
+        <h2 id="qunit-banner"></h2>
+        <h2 id="qunit-userAgent"></h2>
+        <ol id="qunit-tests">
+        </ol>
+        <div id="submitting" style="display: none">
+            Submitting results..
+        </div>
+        <div id="testitems">
+        </div>
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+        <script type="text/javascript" src="../javascript/qunit/qunit.js"></script>
+        <script type="text/javascript" src="../javascript/param_utils.js"></script>
+        <script type="text/javascript" src="../javascript/jsmeter/json2.js"></script>
+        <script type="text/javascript" src="../javascript/testswarm/inject.js"></script>
+        <script type="text/javascript">
+            jQuery(document).ready(function(){
+                function stripWhiteSpace(str){
+                    return str.replace(/\s+/g, '');
+                };
+                eval(getParam("code"));
+                var properties = {
+                    'li': true,
+                    'div': true,
+                    'p': true,
+                    'ul': true,
+                    'ol': true
+                };
+                var testElem = jQuery("#testitems");
+                test("Test that the module exists", function(){
+                    ok(h, "property named h exists");
+                });
+                
+                test("Testing API for the properties", function(){
+                    expect(10);
+                    for (var item in h) {
+                        ok(properties[item], 'property ' + item);
+                        ok(typeof h[item] === 'function', "property " + item + " is a function");
+                    }
+                });
+                
+                test("Testing with empty elements", function(){
+                    for (var key in properties) {
+                        testElem.html(eval("(h." + key + "());"));
+                        equals(testElem.children().length, 1, "number of elements created");
+                        equals(testElem.children()[0].nodeName.toLowerCase(), key, "nodename is " + key);
+                        ok(!jQuery(testElem.children()[0]).html(), "created element is empty");
+                    }
+                });
+                
+                test("Testing attributes", function(){
+                    var attrs = "{'id': 123, 'style': 'float:left;'}";
+                    var attrStr = 'id="id1"class="red"style="float:left;"'
+                    var elem;
+                    for (var key in properties) {
+                        testElem.html(eval("(h." + key + "(" + attrs + "));"));
+                        elem = jQuery(testElem.children()[0]);
+                        equals(elem.attr("id"), 123, "id set correctly for " + key);
+                        equals(stripWhiteSpace(elem.attr("style")), "float:left;", "style set correctly for " + key);
+                    }
+                });
+                
+                test("Testing the assignment example", function(){
+                    var actual = h.div({
+                        'id': 'mydiv'
+                    }, h.p("TODO list"), h.ul(h.li("Write tests"), h.li({
+                        'class': 'current'
+                    }, "Write code"), h.li("Test code"), h.li("Start over")));
+                    var expected = '<div id="mydiv">  <p>TODO list</p>\n\t  <ul><li>Write tests</li><li class="current">Write code</li><li>Test code</li><li>Start over</li></ul></div>';
+                    equals(stripWhiteSpace(actual), stripWhiteSpace(expected), "testing the example");
+                });
+                
+                test("Testing if functions take unlimited number of arguments", function(){
+                    for (var key in properties) {
+                        var actualCall = "h." + key + "(", expected = "<" + key + ">";
+                        for (var i = 0; i < 100; i++) {
+                            actualCall += "h.li()";
+                            if (i < 99) {
+                                actualCall += ",";
+                            }
+                            expected += "<li></li>";
+                        }
+                        var actual = eval(actualCall + ");");
+                        expected += "</" + key + ">";
+                        equals(stripWhiteSpace(actual), expected, "tested with 100 elements")
+                    }
+                });
+            });
+        </script>
+    </body>
+</html>
