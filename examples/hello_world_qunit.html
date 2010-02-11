@@ -1,0 +1,34 @@
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="/site-media/css/qunit.css"/>
+    </head>
+    <body>
+        <h1 id="qunit-header">Running tests</h1>
+        <h2 id="qunit-banner"></h2>
+        <h2 id="qunit-userAgent"></h2>
+        <ol id="qunit-tests">
+        </ol>
+        <div id="submitting" style="display: none">
+            Submitting results..
+        </div>
+        <ul id="list-items">
+        </ul>
+        <script type="text/javascript" src="../javascript/qunit/qunit.js"></script>
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+        <script type="text/javascript" src="../javascript/param_utils.js"></script>
+        <script type="text/javascript" src="../javascript/testswarm/inject.js"></script>
+        <script type="text/javascript">
+            var alertedStr;
+            jQuery(document).ready(function(){
+            
+                window.alert = function(str){
+                    alertedStr = str;
+                };
+                eval(getParam("code"));
+                test("Testing if the string was alerted!", function(){
+                    equals(alertedStr, "Hello World!", "alerted value correct");
+                });
+            });
+        </script>
+    </body>
+</html>

@@ -1,0 +1,32 @@
+<html>
+	<head>
+		<title>Hello World Exercise</title>
+		<link href="jsassess.css" rel="stylesheet" type="text/css"/>
+	</head>
+<body>
+<div id="jsassess-exercise" class="jsassess">
+<h2>Hello World</h2>
+<noscript>Are you kidding? You're trying to learn JavaScript with JavaScript turned off? Go fix it and come back soon!</noscript>
+<div>
+<p>
+Write code that alerts the string "Hello World!".
+</p>
+</div>
+<form>
+<textarea id="jsassess-editor" style="height: 250px; width: 100%;">// write your code here</textarea>
+</form>
+<div id="exerciseButtons">
+	<a href="#" id="submitButton">Get feedback</a>
+</div>
+</div>
+<div id="jsassess-feedback" class="jsassess"></div>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+<script type="text/javascript" src="../javascript/edit_area/edit_area_full.js"></script>
+<script type="text/javascript" src="../javascript/jsmeter/json2.js"></script>
+<script type="text/javascript" src="../javascript/jsassess.js"></script>
+<script>
+exerciseOptions = { 'jslint': true,
+		    'tests': ['hello_world_qunit.html'],
+	 	    'commonspath': '../javascript/'};
+</script>
+</body></html>
