@@ -71,7 +71,7 @@
                     }, h.p("TODO list"), h.ul(h.li("Write tests"), h.li({
                         'class': 'current'
                     }, "Write code"), h.li("Test code"), h.li("Start over")));
-                    var expected = '<div id="mydiv">  <p>TODO list</p>\n\t  <ul><li>Write tests</li><li class="current">Write code</li><li>Test code</li><li>Start over</li></ul></div>';
+                    var expected = '<div id="mydiv"><p>TODO list</p><ul><li>Write tests</li><li class="current">Write code</li><li>Test code</li><li>Start over</li></ul></div>';
                     equals(stripWhiteSpace(actual), stripWhiteSpace(expected), "testing the example");
                 });
                 
