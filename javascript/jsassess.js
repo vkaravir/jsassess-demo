@@ -99,14 +99,14 @@ var jsmeterFilters = {
     //     "Comment%", "Branches", "Depth", "Cyclomatic Complexity", 
     //     "Halstead Volume", "Halstead Potential", "Program Level", "MI"]
     defaultFilter: function(metrics) {
-        var html = "<table>";
+        var html = "<table>",
+            length;
         for (var index in metrics) {
             if (metrics.hasOwnProperty(index)) {
+                length = metrics[index].length;
                 html += "<tr>";
-                for (var index2 in metrics[index]) {
-                    if (metrics[index].hasOwnProperty(index2)) {
-                        html += "<td>" + metrics[index][index2] + "</td>";
-                    }
+                for (var j=-1; ++j < length; ) {
+                    html += "<td>" + metrics[index][j] + "</td>";
                 }
                 html += "</tr>";
             }
