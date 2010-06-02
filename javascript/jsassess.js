@@ -1,3 +1,98 @@
+/** Awesome script to simulate local/sessionStorage on browsers that don't support it.
+ * by Remy Sharp http://gist.github.com/350433
+ * Modified to simulate only localStorage since we don't use sessionStorage
+ */
+if (!window.localStorage) (function () {
+
+var Storage = function (type) {
+  function createCookie(name, value, days) {
+    var date, expires;
+
+    if (days) {
+      date = new Date();
+      date.setTime(date.getTime()+(days*24*60*60*1000));
+      expires = "; expires="+date.toGMTString();
+    } else {
+      expires = "";
+    }
+    document.cookie = name+"="+value+expires+"; path=/";
+  }
+
+  function readCookie(name) {
+    var nameEQ = name + "=",
+        ca = document.cookie.split(';'),
+        i, c;
+
+    for (i=0; i < ca.length; i++) {
+      c = ca[i];
+      while (c.charAt(0)==' ') {
+        c = c.substring(1,c.length);
+      }
+
+      if (c.indexOf(nameEQ) == 0) {
+        return c.substring(nameEQ.length,c.length);
+      }
+    }
+    return null;
+  }
+  
+  function setData(data) {
+    data = JSON.stringify(data);
+    if (type == 'session') {
+      window.top.name = data;
+    } else {
+      createCookie('localStorage', data, 365);
+    }
+  }
+  
+  function clearData() {
+    if (type == 'session') {
+      window.top.name = '';
+    } else {
+      createCookie('localStorage', '', 365);
+    }
+  }
+  
+  function getData() {
+    var data = type == 'session' ? window.top.name : readCookie('localStorage');
+    return data ? JSON.parse(data) : {};
+  }
+
+  // initialise if there's already data
+  var data = getData();
+
+  return {
+    clear: function () {
+      data = {};
+      clearData();
+    },
+    getItem: function (key) {
+      return data[key] || null;
+    },
+    key: function (i) {
+      // not perfect, but works
+      var ctr = 0;
+      for (var k in data) {
+        if (ctr == i) return k;
+        else ctr++;
+      }
+      return null;
+    },
+    removeItem: function (key) {
+      delete data[key];
+      setData(data);
+    },
+    setItem: function (key, value) {
+      data[key] = value+''; // forces the value to a string
+      setData(data);
+    }
+  };
+};
+
+if (!window.localStorage) window.localStorage = new Storage('local');
+})();
+
+
 var exerciseOptions = { };
 var jsmeterFilters = { 
 	//["Line", "Function", "Statements", "Lines", "Comment Lines", 
@@ -63,6 +158,7 @@ function runTests(testFile, exerciseOptions) {
 	jQuery("#jsassess-iframes").append(jsrunframe);
 }
 jQuery().ready(function() {
+
 	var elem, elemId, feedbackIds = ["jslint", "test", "jsmeter"];
 	for (var i=0; i<feedbackIds.length; i++) {
 		elemId = "jsassess-" + feedbackIds[i];
@@ -77,6 +173,23 @@ jQuery().ready(function() {
 		elem.id = "jsassess-iframes";
 		jQuery("body").append(elem);
 	}
+    var key = document.location.pathname.split('/');
+    key = key[key.length-1];
+    var getStoredSolutions = function() {
+        var solutions = null;
+        if (window.localStorage) {
+            var item = localStorage.getItem(key);
+            // Chrome dies if we try to JSON.parse null
+            if (item) {
+                solutions = JSON.parse(item);
+            }
+        }
+        return solutions?solutions:[];
+    }
+    var solutions = getStoredSolutions();
+    if (solutions.length > 0) {
+        $("#jsassess-editor").text(solutions[solutions.length-1].code);
+    }
 	editAreaLoader.init({
 		id : "jsassess-editor",		// textarea id
 		syntax: "js",			// syntax to be uses for highgliting
@@ -85,6 +198,12 @@ jQuery().ready(function() {
 	jQuery("#submitButton").click(function(event) {
 		event.preventDefault();
 		event.stopPropagation();
+
+        // store the solution to the localStorage to be fetched when accessing the page in the future
+        var newItem = {'code': editAreaLoader.getValue("jsassess-editor"), 'tstamp': new Date()};
+        solutions.push(newItem);
+	    localStorage.setItem(key, JSON.stringify(solutions));
+
 		if (exerciseOptions.jsmeter) {
 			run("jsmeter", exerciseOptions);
 		}
