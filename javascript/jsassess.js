@@ -115,31 +115,32 @@ var jsmeterFilters = {
         return html;
     }
 };
-function handleMessage(msg) {
-    data = JSON.parse(msg.data);
-    jQuery("#" + data.type + "iframe").remove();
-    if (data.type === 'jsmeter') {
-        jQuery("#jsassess-" + data.type).html("<h3>Complexity metrics</h3>" + exerciseOptions.jsmeter(data.results));        
-    } else if (data.type === 'jslint'){
-        jQuery("#jsassess-" + data.type).html("<h3>Programming and style errors</h3>" + data.results);
-    } else if (data.type === 'test') {
-        jQuery("#jsassess-" + data.type).html("<h3>Functionality</h3>" + data.results);
-    }
-}
-function run(type, exerciseOptions) {
-    var jsrunframe = document.createElement("iframe");
-    jsrunframe.id = type + "iframe";
-    jsrunframe.src = exerciseOptions.commonspath + type + ".html?code=" + encodeURIComponent(editAreaLoader.getValue("jsassess-editor")) +
-        "&options=" + encodeURIComponent(JSON.stringify(exerciseOptions[type]));
-    jQuery("#jsassess-iframes").append(jsrunframe);
-}
-function runTests(testFile, exerciseOptions) {
-    var jsrunframe = document.createElement("iframe");
-    jsrunframe.id = "testiframe";
-    jsrunframe.src = "./" + testFile + "?code=" + encodeURIComponent(editAreaLoader.getValue("jsassess-editor"));
-    jQuery("#jsassess-iframes").append(jsrunframe);
-}
 jQuery().ready(function() {
+    var handleMessage = function(msg) {
+        data = JSON.parse(msg.data);
+        jQuery("#" + data.type + "iframe").remove();
+        if (data.type === 'jsmeter') {
+            jQuery("#jsassess-" + data.type).html("<h3>Complexity metrics</h3>" + exerciseOptions.jsmeter(data.results));
+        } else if (data.type === 'jslint'){
+            jQuery("#jsassess-" + data.type).html("<h3>Programming and style errors</h3>" + data.results);
+        } else if (data.type === 'test') {
+            jQuery("#jsassess-" + data.type).html("<h3>Functionality</h3>" + data.results);
+        }
+    }
+    var $jsassessIframes = jQuery("#jsassess-iframes");
+    var run = function(type, exerciseOptions) {
+        var jsrunframe = document.createElement("iframe");
+        jsrunframe.id = type + "iframe";
+        jsrunframe.src = exerciseOptions.commonspath + type + ".html?code=" + encodeURIComponent(editAreaLoader.getValue("jsassess-editor")) +
+            "&options=" + encodeURIComponent(JSON.stringify(exerciseOptions[type]));
+        $jsassessIframes.append(jsrunframe);
+    }
+    var runTests = function(testFile, exerciseOptions) {
+        var jsrunframe = document.createElement("iframe");
+        jsrunframe.id = "testiframe";
+        jsrunframe.src = "./" + testFile + "?code=" + encodeURIComponent(editAreaLoader.getValue("jsassess-editor"));
+        $jsassessIframes.append(jsrunframe);
+    }
 
     var elem, elemId, feedbackIds = ["jslint", "test", "jsmeter"];
     for (var i=0; i<feedbackIds.length; i++) {
@@ -150,9 +151,10 @@ jQuery().ready(function() {
             jQuery("#jsassess-feedback").append(elem);
         }
     }
-    if (!jQuery("#jsassess-iframes").length) {
+    if (!$jsassessIframes.length) {
         elem = document.createElement("div");
         elem.id = "jsassess-iframes";
+        $jsassessIframes = $(elem);
         jQuery("body").append(elem);
     }
     var key = document.location.pathname.split('/');
@@ -200,7 +202,7 @@ jQuery().ready(function() {
             }
         }
     });
+    if (window.addEventListener) {
+        window.addEventListener( "message", handleMessage, false);
+    }
 });
-if (window.addEventListener) {
-    window.addEventListener( "message", handleMessage, false);
-}
