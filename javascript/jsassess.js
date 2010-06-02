@@ -113,24 +113,6 @@ var jsmeterFilters = {
         }
         html += "</table>";
         return html;
-    },
-    restrictedDepthFilter: function(metrics) {
-        var depth = 0;
-        for (var index in metrics) {
-             if (metrics.hasOwnProperty(index)) {
-                 if (index === "0") { continue; }
-                 depth += metrics[index][7];
-             }
-        }
-        var bgColor = "green", feedback = "Complexity looks not too complex :)";
-        if (depth >= 3) { 
-            bgColor = "red";
-            feedback = "Your algorithm looks quite complex, perhaps O(N<sup>3</sup>)";
-        } else if (depth > 1) {
-            bgColor = "orange";
-            feedback = "Pretty good, perhaps O(N<sup>2</sup>) or O(NlogN)";
-        }
-        return '<div style="color:' + bgColor + '">' + feedback + '</div>';
     }
 };
 function handleMessage(msg) {
